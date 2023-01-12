@@ -3,7 +3,7 @@ using management.api.sdk;
 using NugetTest.sdk_methods;
 
 /// <summary>
-/// The Main method has a sample call to get containers. You can also use the other operation methods present in this class which will call the API methods to the new management api.
+/// The Main method has a sample call to get batch. You can also use the other operation methods present in this class which will call the API methods to the new management api.
 /// </summary>
 internal class Program
 {
