@@ -14,13 +14,9 @@ internal class Program
         var guid = "<<Provide the guid>>";
         var locale = "<<Provide the locale>>";
 
-        ClientInstance client = new ClientInstance(options);
 
         //Sample code to check for a valid response.
- 
-        var resp = client.containerMethods.GetContainerList(guid);
-
-        var result = resp.GetAwaiter().GetResult();
+        BatchOperations(options, guid, 4070);
      }
 
     static void AssetsOperations(Options options, string guid)
