@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agility.Management.SDK" Version="1.0.1-beta" />
+    <PackageReference Include="Agility.Management.SDK" Version="1.0.4-beta" />
   </ItemGroup>
 
 </Project>

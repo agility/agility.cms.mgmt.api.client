@@ -6,93 +6,93 @@ namespace NugetTest.sdk_methods
     public class Contents
     {
         private Options _options = null;
-        ContentMethods _contentMethods = null;
+        ClientInstance _clientInstance = null;
 
         public Contents(Options options)
         {
             _options = options;
-            _contentMethods = new ContentMethods(_options);
+            _clientInstance = new ClientInstance(_options);
         }
 
-        public ContentItem GetContentItem(int id)
+        public ContentItem GetContentItem(int id, string guid, string locale)
         {
-            var resp = _contentMethods.GetContentItem(id);
+            var resp = _clientInstance.contentMethods.GetContentItem(id, guid, locale);
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public string SaveContentItem(ContentItem contentItem)
+        public int SaveContentItem(ContentItem contentItem, string guid, string locale)
         {
-            var resp = _contentMethods.SaveContentItem(contentItem);
+            var resp = _clientInstance.contentMethods.SaveContentItem(contentItem, guid, locale);
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public List<string> SaveContentItems(List<ContentItem> contentItems)
+        public List<object> SaveContentItems(List<ContentItem> contentItems, string guid, string locale)
         {
-            var resp = _contentMethods.SaveContentItems(contentItems);
+            var resp = _clientInstance.contentMethods.SaveContentItems(contentItems, guid, locale);
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public string PublishContent(int contentID, string comments)
+        public int? PublishContent(int contentID, string guid, string locale, string comments)
         {
-            var resp = _contentMethods.PublishContent(contentID, comments);
-
-            var result = resp.GetAwaiter().GetResult();
-
-            return result;
-        }
-
-        public string UnPublishContent(int contentID, string comments)
-        {
-            var resp = _contentMethods.UnPublishContent(contentID, comments);
+            var resp = _clientInstance.contentMethods.PublishContent(contentID, guid, locale, comments);
 
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public string ContentRequestApproval(int contentID, string comments)
+        public int? UnPublishContent(int contentID, string guid, string locale, string comments)
         {
-            var resp = _contentMethods.ContentRequestApproval(contentID, comments);
+            var resp = _clientInstance.contentMethods.UnPublishContent(contentID, guid, locale, comments);
 
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public string ApproveContent(int contentID, string comments)
+        public int? ContentRequestApproval(int contentID, string guid, string locale, string comments)
         {
-            var resp = _contentMethods.ApproveContent(contentID, comments);
+            var resp = _clientInstance.contentMethods.ContentRequestApproval(contentID, guid, locale, comments);
 
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public string DeclineContent(int contentID, string comments)
+        public int? ApproveContent(int contentID, string guid, string locale, string comments)
         {
-            var resp = _contentMethods.DeclineContent(contentID, comments);
+            var resp = _clientInstance.contentMethods.ApproveContent(contentID, guid, locale, comments);
 
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public string DeleteContent(int contentID, string comments)
+        public int? DeclineContent(int contentID, string guid, string locale, string comments)
         {
-            var resp = _contentMethods.DeleteContent(contentID, comments);
+            var resp = _clientInstance.contentMethods.DeclineContent(contentID, guid, locale, comments);
 
             var result = resp.GetAwaiter().GetResult();
 
             return result;
         }
 
-        public ContentList GetContentItems(string referenceName,
+        public int? DeleteContent(int contentID, string guid, string locale, string comments)
+        {
+            var resp = _clientInstance.contentMethods.DeleteContent(contentID, guid, locale, comments);
+
+            var result = resp.GetAwaiter().GetResult();
+
+            return result;
+        }
+
+        public ContentList GetContentItems(string referenceName, string guid, string locale,
            string filter = null,
            string fields = null,
            string sortDirection = null,
@@ -100,7 +100,7 @@ namespace NugetTest.sdk_methods
            int take = 50,
            int skip = 0)
         {
-            var resp = _contentMethods.GetContentItems(referenceName, filter, fields, sortDirection, sortField, take, skip);
+            var resp = _clientInstance.contentMethods.GetContentItems(referenceName, guid, locale, filter, fields, sortDirection, sortField, take, skip);
             var result = resp.GetAwaiter().GetResult();
 
             return result;

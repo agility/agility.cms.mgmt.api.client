@@ -10,19 +10,20 @@ internal class Program
     static void Main(string[] args)
     {
         Options options = new Options();
-        options.guid = "<<Provide the GUID>>";
-        options.locale = "<<Provide the locale eg: en-us>>";
         options.token = "<<Provide the token>>";
+        var guid = "<<Provide the guid>>";
+        var locale = "<<Provide the locale>>";
+
+        ClientInstance client = new ClientInstance(options);
 
         //Sample code to check for a valid response.
-        ContainerMethods containerMethods = new ContainerMethods(options);
-
-        var resp = containerMethods.GetContainerList();
+ 
+        var resp = client.containerMethods.GetContainerList(guid);
 
         var result = resp.GetAwaiter().GetResult();
      }
 
-    static void AssetsOperations(Options options)
+    static void AssetsOperations(Options options, string guid)
     {
         Assets assets = new Assets(options);
 
@@ -32,75 +33,75 @@ internal class Program
 
         string agilityFolder = "<<Agility Folder Name>>";
 
-        var medias = assets.Upload(files, agilityFolder);
+        var medias = assets.Upload(files, guid, agilityFolder);
 
         string newFolder = "<<Agility Folder where the file(s) needs to be moved>>";
 
         List<Media> mediaList = new List<Media>();
         foreach (var media in medias)
         {
-            mediaList.Add(assets.MoveFile(media.MediaID, newFolder));
+            mediaList.Add(assets.MoveFile(media.MediaID, guid, newFolder));
         }
 
         foreach (var item in mediaList)
         {
-            assets.GetAssetByID(item.MediaID);
-            assets.GetAssetByURL(item.OriginUrl);
+            assets.GetAssetByID(item.MediaID, guid);
+            assets.GetAssetByURL(item.OriginUrl, guid);
         }
 
         foreach (var media in mediaList)
         {
-            assets.DeleteFile(media.MediaID);
+            assets.DeleteFile(media.MediaID, guid);
         }
 
-        var fileList = assets.GetMediaList();
+        var fileList = assets.GetMediaList(guid);
     }
 
-    static void BatchOperations(Options options)
+    static void BatchOperations(Options options, string guid, int batchID)
     {
         Batches batches = new Batches(options);
 
-        var batch = batches.GetBatch(15);
+        var batch = batches.GetBatch(batchID, guid);
     }
 
-    static void ModelOperations(Options options)
+    static void ModelOperations(Options options, string guid)
     {
         Models models = new Models(options);
 
-        var createdModel = SaveModel(options);
-        var model = models.GetModel((int)createdModel.id);
+        var createdModel = SaveModel(options, guid);
+        var model = models.GetModel((int)createdModel.id, guid);
 
-        var contentModules = models.GetContentModules(true, false);
+        var contentModules = models.GetContentModules(true, guid, false);
 
-        var pageModules = models.GetPageModules(true);
+        var pageModules = models.GetPageModules(guid, true);
 
-        var deleteModel = models.DeleteModel((int)model.id);
+        var deleteModel = models.DeleteModel((int)model.id, guid);
     }
 
-    static void ContainerOperations(Options options)
+    static void ContainerOperations(Options options, string guid)
     {
-        var model = SaveModel(options);
+        var model = SaveModel(options, guid);
         Containers containers = new Containers(options);
         Models models = new Models(options);
 
-        var createdContainer = SaveContainer(options, (int)model.id);
+        var createdContainer = SaveContainer(options, (int)model.id, guid);
 
-        var containerById = containers.GetContainerById((int)createdContainer.ContentViewID);
+        var containerById = containers.GetContainerById((int)createdContainer.ContentViewID, guid);
 
-        var containerByRef = containers.GetContainerByRef(createdContainer.ReferenceName);
+        var containerByRef = containers.GetContainerByRef(createdContainer.ReferenceName, guid);
 
-        var containerSec = containers.GetContainerSecurity((int)createdContainer.ContentViewID);
+        var containerSec = containers.GetContainerSecurity((int)createdContainer.ContentViewID, guid);
 
-        var notifications = containers.GetNotifications((int)createdContainer.ContentViewID);
+        var notifications = containers.GetNotifications((int)createdContainer.ContentViewID, guid);
 
-        var contList = containers.GetContainerList();
+        var contList = containers.GetContainerList(guid);
 
-        var delCont = containers.DeleteContainer((int)createdContainer.ContentViewID);
+        var delCont = containers.DeleteContainer((int)createdContainer.ContentViewID, guid);
 
-        var delModel = models.DeleteModel((int)model.id);
+        var delModel = models.DeleteModel((int)model.id, guid);
     }
 
-    static Model SaveModel(Options options)
+    static Model SaveModel(Options options, string guid)
     {
         Models models = new Models(options);
         Containers containers = new Containers(options);
@@ -137,12 +138,12 @@ internal class Program
         modelValues.fields = new List<ModelField?>();
         modelValues.fields.Add(modelField);
 
-        var model = models.SaveModel(modelValues);
+        var model = models.SaveModel(modelValues, guid);
 
         return model;
     }
 
-    static Container SaveContainer(Options options, int modelID)
+    static Container SaveContainer(Options options, int modelID, string guid)
     {
         Containers containers = new Containers(options);
         var container = new Container();
@@ -158,43 +159,43 @@ internal class Program
         container.IsDynamicPageList = true;
         container.ContentViewCategoryID = null;
 
-        var cotainer = containers.SaveContainer(container);
+        var cotainer = containers.SaveContainer(container, guid);
 
         return cotainer;
     }
 
-    static void ContentOperations(Options options)
+    static void ContentOperations(Options options, string guid, string locale)
     {
         
-        var model = SaveModel(options);
-        var container = SaveContainer(options, (int)model.id);
+        var model = SaveModel(options, guid);
+        var container = SaveContainer(options, (int)model.id, guid);
         Contents contents = new Contents(options);
         Containers containers = new Containers(options);
         Models models = new Models(options);
 
         var contentItem = GetContentObject(container);
 
-        var contentIdStr = contents.SaveContentItem(contentItem);
+        var contentIdStr = contents.SaveContentItem(contentItem, guid, locale);
 
         var contentID = Convert.ToInt32(contentIdStr);
 
-        var content = contents.GetContentItem((int)contentID);
+        var content = contents.GetContentItem((int)contentID, guid, locale);
 
-        var publishedContent = contents.PublishContent(content.contentID, "Publish Content");
+        var publishedContent = contents.PublishContent(content.contentID, guid, locale, "Publish Content");
 
-        var unPublishContent = contents.UnPublishContent(content.contentID, "UnPublish Content");
+        var unPublishContent = contents.UnPublishContent(content.contentID, guid, locale, "UnPublish Content");
 
-        var contentRequestApproval = contents.ContentRequestApproval(content.contentID, "Request for content approval");
+        var contentRequestApproval = contents.ContentRequestApproval(content.contentID, guid, locale, "Request for content approval");
 
-        var approveContent = contents.ApproveContent(content.contentID, "Approve Content");
+        var approveContent = contents.ApproveContent(content.contentID, guid, locale, "Approve Content");
 
-        var declineContent = contents.DeclineContent(content.contentID, "Decline Content");
+        var declineContent = contents.DeclineContent(content.contentID, guid, locale, "Decline Content");
 
-        var deleteContent = contents.DeleteContent(content.contentID, "Delete Content");
+        var deleteContent = contents.DeleteContent(content.contentID, guid, locale, "Delete Content");
 
-        var deleteContainer = containers.DeleteContainer((int)container.ContentViewID);
+        var deleteContainer = containers.DeleteContainer((int)container.ContentViewID, guid);
 
-        var deleteModel = models.DeleteModel((int)model.id);
+        var deleteModel = models.DeleteModel((int)model.id, guid);
     }
 
     static ContentItem GetContentObject(Container container)
@@ -218,11 +219,11 @@ internal class Program
         return contentItem;
     }
 
-    static void UserOperations(Options options)
+    static void UserOperations(Options options, string guid)
     {
         Users users = new Users(options);
 
-        var userList = users.GetUsers();
+        var userList = users.GetUsers(guid);
 
 
         var userRole = new InstanceRole
@@ -239,56 +240,56 @@ internal class Program
         var firstName = $"FirstName{DateTime.Now.Ticks}";
         var lastName = $"LastName{DateTime.Now.Ticks}";
         var email = $"{firstName}.{lastName}@mail.com";
-        var savedUser = users.SaveUser(email, userRoles, firstName, lastName);
+        var savedUser = users.SaveUser(email, userRoles, guid, firstName, lastName);
 
-        var userDelete = users.DeleteUser(savedUser.UserID);
+        var userDelete = users.DeleteUser(savedUser.UserID, guid);
     }
 
-    static void PageOperations(Options options)
+    static void PageOperations(Options options, string guid, string locale)
     {
-        var model = SaveModel(options);
-        var container = SaveContainer(options, (int)model.id);
+        var model = SaveModel(options, guid);
+        var container = SaveContainer(options, (int)model.id, guid);
         var contentItem = GetContentObject(container);
 
         Contents contents = new Contents(options);
         Containers containers = new Containers(options);
         Models models = new Models(options);
 
-        var savedContent = contents.SaveContentItem(contentItem);
+        var savedContent = contents.SaveContentItem(contentItem, guid, locale);
 
         var contentID = Convert.ToInt32(savedContent);
 
-        var content = contents.GetContentItem(contentID);
+        var content = contents.GetContentItem(contentID, guid, locale);
 
         var pageItem = GetPageObject(model, content.contentID);
 
         Pages pages = new Pages(options);
 
-        var pageStr = pages.SavePage(pageItem);
+        var pageStr = pages.SavePage(pageItem, guid, locale);
 
         var pageID = Convert.ToInt32(pageStr);
 
-        var page = pages.GetPage(pageID);
+        var page = pages.GetPage(pageID, guid, locale);
 
-        var publishPage = pages.PublishPage((int)page.pageID);
+        var publishPage = pages.PublishPage((int)page.pageID, guid, locale);
 
-        var unPublishPage = pages.UnPublishPage((int)page.pageID);
+        var unPublishPage = pages.UnPublishPage((int)page.pageID, guid, locale);
 
-        var pageRequestApproval = pages.PageRequestApproval((int)page.pageID);
+        var pageRequestApproval = pages.PageRequestApproval((int)page.pageID, guid, locale);
 
-        var approvePage = pages.ApprovePage((int)page.pageID);
+        var approvePage = pages.ApprovePage((int)page.pageID, guid, locale);
 
-        var declinePage = pages.DeclinePage((int)page.pageID);
+        var declinePage = pages.DeclinePage((int)page.pageID, guid, locale);
 
-        var deletePage = pages.DeletePage((int)page.pageID);
+        var deletePage = pages.DeletePage((int)page.pageID, guid, locale);
 
-        var deletedContent = contents.DeleteContent(contentID, "Delete Content");
+        var deletedContent = contents.DeleteContent(contentID, guid, locale, "Delete Content");
 
-        var containerDel = containers.DeleteContainer((int)container.ContentViewID);
+        var containerDel = containers.DeleteContainer((int)container.ContentViewID, guid);
 
-        var modelDel = models.DeleteModel((int)model.id);
+        var modelDel = models.DeleteModel((int)model.id, guid);
 
-        var siteMap = pages.GetSitemap();
+        var siteMap = pages.GetSitemap(guid, locale);
     }
 
     static PageItem GetPageObject(Model model, int contentID)

@@ -6,81 +6,81 @@ namespace NugetTest.sdk_methods
     public class Pages
     {
         private Options _options = null;
-        PageMethods _pageMethods = null;
+        ClientInstance _clientInstance = null;
 
         public Pages(Options options)
         {
             _options = options;
-            _pageMethods = new PageMethods(options);
+            _clientInstance = new ClientInstance(_options);
         }
 
-        public List<Sitemap> GetSitemap()
+        public List<Sitemap> GetSitemap(string guid, string locale)
         {
-            var resp = _pageMethods.GetSiteMap();
+            var resp = _clientInstance.pageMethods.GetSiteMap(guid, locale);
             var response = resp.GetAwaiter().GetResult();
 
             return response;
         }
 
-        public PageItem GetPage(int pageID)
+        public PageItem GetPage(int pageID, string guid, string locale)
         {
-            var resp = _pageMethods.GetPage(pageID);
+            var resp = _clientInstance.pageMethods.GetPage(pageID, guid, locale);
             var response = resp.GetAwaiter().GetResult();
 
             return response;
         }
 
-        public int PublishPage(int pageID, string comments = null)
+        public int PublishPage(int pageID, string guid, string locale, string comments = null)
         {
-            var resp = _pageMethods.PublishPage(pageID, comments);
+            var resp = _clientInstance.pageMethods.PublishPage(pageID, guid, locale, comments);
             var response = resp.GetAwaiter().GetResult();
 
             return (int)response;
         }
 
-        public int UnPublishPage(int? pageID, string? comments = null)
+        public int UnPublishPage(int? pageID, string guid, string locale, string? comments = null)
         {
-            var resp = _pageMethods.UnPublishPage(pageID, comments);
+            var resp = _clientInstance.pageMethods.UnPublishPage(pageID, guid, locale, comments);
             var response = resp.GetAwaiter().GetResult();
 
             return (int)response;
         }
 
-        public int PageRequestApproval(int? pageID, string? comments = null)
+        public int PageRequestApproval(int? pageID, string guid, string locale, string? comments = null)
         {
-            var resp = _pageMethods.PageRequestApproval(pageID, comments);
+            var resp = _clientInstance.pageMethods.PageRequestApproval(pageID, guid, locale, comments);
             var response = resp.GetAwaiter().GetResult();
 
             return (int)response;
         }
 
-        public int ApprovePage(int? pageID, string? comments = null)
+        public int ApprovePage(int? pageID, string guid, string locale, string? comments = null)
         {
-            var resp = _pageMethods.ApprovePage(pageID, comments);
+            var resp = _clientInstance.pageMethods.ApprovePage(pageID, guid, locale, comments);
             var response = resp.GetAwaiter().GetResult();
 
             return (int)response;
         }
 
-        public int DeclinePage(int? pageID, string? comments = null)
+        public int DeclinePage(int? pageID, string guid, string locale, string? comments = null)
         {
-            var resp = _pageMethods.DeclinePage(pageID, comments);
+            var resp = _clientInstance.pageMethods.DeclinePage(pageID, guid, locale, comments);
             var response = resp.GetAwaiter().GetResult();
 
             return (int)response;
         }
 
-        public int DeletePage(int? pageID, string? comments = null)
+        public int DeletePage(int? pageID, string guid, string locale, string? comments = null)
         {
-            var resp = _pageMethods.DeletePage(pageID, comments);
+            var resp = _clientInstance.pageMethods.DeletePage(pageID, guid, locale, comments);
             var response = resp.GetAwaiter().GetResult();
 
             return (int)response;
         }
 
-        public string SavePage(PageItem pageItem, int? parentPageID = -1, int? placeBeforePageItemID = -1)
+        public int? SavePage(PageItem pageItem, string guid, string locale, int? parentPageID = -1, int? placeBeforePageItemID = -1)
         {
-            var resp = _pageMethods.SavePage(pageItem, parentPageID, placeBeforePageItemID);
+            var resp = _clientInstance.pageMethods.SavePage(pageItem,guid, locale, parentPageID, placeBeforePageItemID);
             var response = resp.GetAwaiter().GetResult();
 
             return response;

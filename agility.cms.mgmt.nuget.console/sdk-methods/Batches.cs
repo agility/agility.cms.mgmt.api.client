@@ -5,17 +5,17 @@ namespace NugetTest.sdk_methods
     public class Batches
     {
         private Options _options = null;
-        BatchMethods _methods = null;
+        ClientInstance _clientInstance = null;
 
         public Batches(Options options)
         {
             _options = options;
-            _methods = new BatchMethods(_options);
+            _clientInstance = new ClientInstance(_options);
         }
 
-        public Batch GetBatch(int id)
+        public Batch GetBatch(int id, string guid)
         {
-            var resp = _methods.GetBatch(id);
+            var resp = _clientInstance.batchMethods.GetBatch(id, guid);
             var result = resp.GetAwaiter().GetResult();
 
             return result;
